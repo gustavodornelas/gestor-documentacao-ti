@@ -4,6 +4,7 @@ const empresaRoutes = require('./routes/empresa');
 const filialRoutes = require('./routes/filial_empresa');
 const colaboradorRoutes = require('./routes/colaborador');
 const equipamentoRoutes = require('./routes/equipamento');
+const autenticacaoRoutes = require('./routes/autenticacao');
 
 const app = express();
 const port = 5000;
@@ -18,6 +19,8 @@ app.use('/api/empresa', empresaRoutes);
 app.use('/api/filial', filialRoutes);
 app.use('/api/colaborador', colaboradorRoutes);
 app.use('/api/equipamento', equipamentoRoutes);
+app.use('/api/autenticacao', autenticacaoRoutes);
+
 
 // Iniciar o servidor
 app.listen(port, () => {

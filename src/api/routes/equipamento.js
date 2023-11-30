@@ -1,7 +1,8 @@
 // src/api/routes/empresas.js
 const express = require('express');
 const router = express.Router();
-const db = require('../database'); // Supondo que você tenha um arquivo para a conexão com o banco de dados
+const db = require('../database');
+const verificarToken = require('./verificarToken');
 
 function converterData(data) {
     if (data !== "") {
@@ -28,7 +29,7 @@ function converterData(data) {
 }
 
 
-router.get('/', (req, res) => {
+router.get('/', verificarToken, (req, res) => {
     const sql = 'SELECT * FROM equipamento';
     db.query(sql, (err, result) => {
         if (err) {
@@ -40,7 +41,7 @@ router.get('/', (req, res) => {
 
 
 // Cadastrar um novo equipamento
-router.post('/', (req, res) => {
+router.post('/', verificarToken, (req, res) => {
     console.log(req.body);
 
     const { tipo_equipamento, alias_equipamento, id_colaborador, data_inicial_colaborador, situacao, marca, modelo, numero_serie, metodo_aquisicao,
@@ -68,7 +69,7 @@ router.post('/', (req, res) => {
 });
 
 // Atualizar um equipamento
-router.put('/:id', (req, res) => {
+router.put('/:id', verificarToken, (req, res) => {
     const { id } = req.params;
     const { tipo_equipamento, alias_equipamento, id_colaborador, data_inicial_colaborador, situacao, marca, modelo, numero_serie, metodo_aquisicao,
         data_aquisicao, numero_nota_fiscal, fornecedor, contrato, valor_equipamento, data_baixa, motivo_baixa, sistema_operacional, disco_SSD,
@@ -94,7 +95,7 @@ router.put('/:id', (req, res) => {
 });
 
 // Deletar um equipamento
-router.delete('/:id', (req, res) => {
+router.delete('/:id', verificarToken, (req, res) => {
     const { id } = req.params;
 
     const sql = 'DELETE FROM equipamento WHERE ID = ?';

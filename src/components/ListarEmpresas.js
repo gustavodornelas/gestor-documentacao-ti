@@ -1,28 +1,41 @@
 import { useEffect, useState } from "react";
-import api from "../api";
-import { useNavigate } from "react-router-dom";
+import api from "../services/api";
+import { Navigate, useNavigate } from "react-router-dom";
 import Loading from "./Loading";
 import Tabela from "./Tabela";
 
 
-export default function TabelaEmpresas() {
+export default function ListarEmpresasComponent() {
     const [empresas, setEmpresas] = useState([]);
     const [loading, setLoading] = useState(true);
     const navigate = useNavigate();
 
     const handleEdit = (id) => {
-        console.log(id);
-        navigate('/cadastrar-empresa');
+        navigate('/empresas/cadastrar/' + id);
     };
 
     const handleAdd = () => {
-        navigate('/cadastrar-empresa');
-        console.log("Add item");
+        navigate('/empresas/cadastrar');
     };
 
-    const handleDelete = (id) => {
+    const handleDelete = (ids) => {
         // Lógica para lidar com a remoção
-        console.log("Deletar item: " + id);
+
+        ids.forEach(id => {
+            let nomeEmpresa;
+            empresas.forEach(empresa => {
+                if (empresa.id === id) {
+                    nomeEmpresa = empresa.nome;
+                }
+            })
+
+            const msg = "Deseja Realmente Deletar a empresa " + nomeEmpresa;
+            if (window.confirm(msg)) {
+                api.delete("/filial/" + id).then((response) => alert(response.data));
+            }
+        });
+
+        return < Navigate to="/empresa" />
     }
 
     useEffect(() => {

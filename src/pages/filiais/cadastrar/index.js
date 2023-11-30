@@ -1,11 +1,11 @@
-import MenuLateral from "../../components/MenuLateral";
-import { Body, Main} from "./Style";
-import Header from "../../components/Header";
+import MenuLateral from "../../../components/MenuLateral";
+import { Body, Main } from "./Style";
+import Header from "../../../components/Header";
 import { Paper } from "@mui/material";
-import TabelaEmpresas from "../../components/TabelaEmpresas";
+import CadastrarFilialComponent from "../../../components/CadastrarFilial";
 
-export default function ListarEmpresas() {
-    
+export default function CadastrarFilial() {
+
     return (
         <Body>
             <Header />
@@ -22,7 +22,7 @@ export default function ListarEmpresas() {
                         overflowX: "auto",
                     }}
                 >
-                    <TabelaEmpresas />
+                    <CadastrarFilialComponent />
                 </Paper>
             </Main>
         </Body>

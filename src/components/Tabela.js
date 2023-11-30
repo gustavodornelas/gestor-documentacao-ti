@@ -86,6 +86,7 @@ function CabecalhoTabela(props) {
           />
         </TableCell>
         {chaves.map((headCell) => (
+          headCell.id !== 'id' ?
           <TableCell
             key={headCell.id}
             align={headCell.numeric ? 'right' : 'left'}
@@ -104,7 +105,7 @@ function CabecalhoTabela(props) {
                 </Box>
               ) : null}
             </TableSortLabel>
-          </TableCell>
+          </TableCell> : null
         ))}
       </TableRow>
     </TableHead>
@@ -121,27 +122,27 @@ CabecalhoTabela.propTypes = {
 };
 
 function BarraSuperior(props) {
-  const { numSelected, titulo, onCadastrar, onEditar, onExcluir } = props;
+  const { numSelected: numSelecionados, titulo, onEdit, onAdd, onDelete } = props;
 
   return (
     <Toolbar
       sx={{
         pl: { sm: 2 },
         pr: { xs: 1, sm: 1 },
-        ...(numSelected > 0 && {
+        ...(numSelecionados > 0 && {
           bgcolor: (theme) =>
             alpha(theme.palette.primary.main, theme.palette.action.activatedOpacity),
         }),
       }}
     >
-      {numSelected > 0 ? (
+      {numSelecionados > 0 ? (
         <Typography
           sx={{ flex: '1 1 100%' }}
           color="inherit"
           variant="subtitle1"
           component="div"
         >
-          {numSelected} selecionados
+          {numSelecionados} selecionados
         </Typography>
       ) : (
         <Typography
@@ -158,25 +159,25 @@ function BarraSuperior(props) {
         
       </div>
 
-      {numSelected === 1 ? (
+      {numSelecionados === 1 ? (
         <div>
           <Tooltip title="Editar">
-            <IconButton onClick={onEditar}>
+            <IconButton onClick={onEdit}>
               <EditIcon />
             </IconButton>
           </Tooltip>
         </div>
       ) : null}
 
-      {numSelected === 0 ? (
+      {numSelecionados === 0 ? (
         <Tooltip title="Cadastrar">
-          <IconButton onClick={onCadastrar}>
+          <IconButton onClick={onAdd}>
             <AddIcon />
           </IconButton>
         </Tooltip>
       ) : (
       <Tooltip title="Excluir">
-        <IconButton onClick={onExcluir}>
+        <IconButton onClick={onDelete}>
           <DeleteIcon />
         </IconButton>
       </Tooltip>
@@ -197,7 +198,7 @@ BarraSuperior.propTypes = {
   numSelected: PropTypes.number.isRequired,
 };
 
-export default function Tabela({ dados, titulo }) {
+export default function Tabela({ dados, titulo, onEdit, onAdd, onDelete }) {
 
   const chaves = gerarChavesPeloObjeto(dados);
 
@@ -207,6 +208,16 @@ export default function Tabela({ dados, titulo }) {
   const [pagina, setPagina] = React.useState(0);
   const [densidade, setDensidade] = React.useState(false);
   const [linhasPorPagina, setLinhasPorPagina] = React.useState(5);
+
+  const handleEdit = () => {
+    // Chame a função onEdit passando o array selecionado
+    onEdit(selecionado);
+  };
+
+  const handleDelete = () => {
+    // Chame a função onDelete passando o array selecionado
+    onDelete(selecionado);
+  };
 
   const handleRequestSort = (event, property) => {
     const isAsc = ordenacao === property && ordem === 'asc';
@@ -276,16 +287,9 @@ export default function Tabela({ dados, titulo }) {
         <BarraSuperior 
           numSelected={selecionado.length}
           titulo={titulo} 
-          onCadastrar={() => {
-            // Lógica para tratar o botão "Cadastrar" quando nenhum item estiver selecionado
-            // Substitua isso com a ação desejada.
-            alert('Botão "Cadastrar" clicado!');
-          }}
-          onEditar={() => {
-            // Lógica para tratar o botão "Editar" quando apenas 1 item estiver selecionado
-            // Substitua isso com a ação desejada.
-            alert('Botão "Editar" clicado!');
-          }}
+          onAdd={onAdd}
+          onEdit={handleEdit}
+          onDelete={handleDelete}
           />
         <TableContainer>
           <Table
@@ -329,9 +333,11 @@ export default function Tabela({ dados, titulo }) {
                     </TableCell>
 
                     {chaves.map((chave) => (
+                      chave.id !== 'id' ? 
                       <TableCell key={chave.id} align="left">
                         {linha[chave.id]}
                       </TableCell>
+                      : null
                     ))}
                   </TableRow>
                 );

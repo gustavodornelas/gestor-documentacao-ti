@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
-import api from "../../api";
-import MenuLateral from "../../components/MenuLateral";
+import api from "../../../services/api";
+import MenuLateral from "../../../components/MenuLateral";
 import styled from "styled-components";
-import Header from "../../components/Header";
+import Header from "../../../components/Header";
 import { Box, CircularProgress } from "@mui/material";
-import Tabela from "../../components/Tabela";
+import Tabela from "../../../components/Tabela";
 
 const Body = styled.div`
   display: flex;

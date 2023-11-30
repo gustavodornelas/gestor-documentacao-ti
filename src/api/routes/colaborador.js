@@ -1,7 +1,8 @@
 // src/api/routes/empresas.js
 const express = require('express');
 const router = express.Router();
-const db = require('../database'); // Supondo que você tenha um arquivo para a conexão com o banco de dados
+const db = require('../database');
+const verificarToken = require('./verificarToken');
 
 function converterData(data) {
     if (data !== "") {
@@ -26,18 +27,18 @@ function converterData(data) {
 }
 
 // Listar todos os colaboradores
-router.get('/', (req, res) => {
+router.get('/', verificarToken, (req, res) => {
     const sql = 'SELECT * FROM colaborador';
     db.query(sql, (err, result) => {
-        if (err) {
-            throw err;
-        }
+        
+        if (err) throw err;
+        
         res.json(result);
     });
 });
 
 // Cadastrar uma nova empresa
-router.post('/', (req, res) => {
+router.post('/', verificarToken, (req, res) => {
     console.log(req.body);
     const { nome, cpf, cargo, setor, sexo, data_nascimento, id_filial, celular, data_integracao, data_desligamento } = req.body;
 
@@ -57,7 +58,7 @@ router.post('/', (req, res) => {
 });
 
 // Atualizar uma empresa
-router.put('/:id', (req, res) => {
+router.put('/:id', verificarToken, (req, res) => {
     const { id } = req.params;
     const { nome, cpf, cargo, setor, sexo, data_nascimento, id_filial, celular, data_integracao, data_desligamento } = req.body;
 
@@ -77,7 +78,7 @@ router.put('/:id', (req, res) => {
 });
 
 // Deletar uma empresa
-router.delete('/:id', (req, res) => {
+router.delete('/:id', verificarToken, (req, res) => {
     const { id } = req.params;
 
     const sql = 'DELETE FROM colaborador WHERE ID = ?';

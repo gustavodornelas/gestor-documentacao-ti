@@ -1,11 +1,12 @@
 // src/api/routes/empresas.js
 const express = require('express');
 const router = express.Router();
-const db = require('../database'); // Supondo que você tenha um arquivo para a conexão com o banco de dados
+const db = require('../database');
+const verificarToken = require('./verificarToken');
 
 // Listar todas as filiais
-router.get('/', (req, res) => {
-    const sql = 'SELECT f.id as ID, f.nome_filial as Filial, e.nome as empresa, f.endereco as endereco, f.bairro as bairro, f.cidade as cidade, ' + 
+router.get('/', verificarToken, (req, res) => {
+    const sql = 'SELECT f.id as id, f.nome_filial as nome, e.nome as empresa, f.endereco as endereco, f.bairro as bairro, f.cidade as cidade, ' + 
     'f.estado as estado, f.telefone as telefone FROM filial_empresa as f INNER JOIN empresa as e ON f.id_empresa = e.id';
     db.query(sql, (err, result) => {
         if (err) {
@@ -15,8 +16,24 @@ router.get('/', (req, res) => {
     });
 });
 
+// Listar uma unica filial
+router.get('/:id', verificarToken, (req, res) => {
+
+    const { id } = req.params;
+
+    const sql = 'SELECT f.id as id, f.nome_filial as nome, f.id_empresa, e.nome as empresa, f.endereco as endereco, f.bairro as bairro, f.cidade as cidade, ' +
+        'f.estado as estado, f.telefone as telefone FROM filial_empresa as f INNER JOIN empresa as e ON f.id_empresa = e.id WHERE f.id = ?';
+    db.query(sql, [id], (err, result) => {
+        if (err) {
+            throw err;
+        }
+        res.json(result[0]);
+    });
+});
+
+
 // Cadastrar uma nova filial
-router.post('/', (req, res) => {
+router.post('/', verificarToken, (req, res) => {
     console.log(req.body);
     const { nome_filial, id_empresa, endereco, bairro, cidade, estado, telefone} = req.body;
 
@@ -32,7 +49,7 @@ router.post('/', (req, res) => {
 });
 
 // Atualizar uma empresa
-router.put('/:id', (req, res) => {
+router.put('/:id', verificarToken, (req, res) => {
     const { id } = req.params;
     const { nome_filial, id_empresa, endereco, bairro, cidade, estado, telefone } = req.body;
 
@@ -48,10 +65,10 @@ router.put('/:id', (req, res) => {
 });
 
 // Deletar uma empresa
-router.delete('/:id', (req, res) => {
+router.delete('/:id', verificarToken, (req, res) => {
     const { id } = req.params;
 
-    const sql = 'DELETE FROM filial_empresa WHERE ID = ?';
+    const sql = 'DELETE FROM filial_empresa WHERE id = ?';
     db.query(sql, [id], (err) => {
         if (err) {
             console.log('Erro: ' + err);

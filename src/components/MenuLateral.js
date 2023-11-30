@@ -11,10 +11,23 @@ import PersonIcon from '@mui/icons-material/Person';
 import HomeIcon from '@mui/icons-material/Home';
 import BusinessIcon from '@mui/icons-material/Business';
 import CorporateFareIcon from '@mui/icons-material/CorporateFare';
+import { AccountCircle } from '@mui/icons-material';
+import styled from 'styled-components';
+import { AuthContext } from '../context/auth';
+import { useContext } from 'react';
+
+const Footer = styled.div`
+    height: 73%;
+    display: flex;
+    align-items: end;
+
+`
 
 export default function MenuLateral() {
     const location = useLocation();
     const [selectedIndex, setSelectedIndex] = React.useState(0);
+    const { signOut } = useContext(AuthContext);
+
 
     React.useEffect(() => {
         // Encontre o índice do item no menu com base na rota atual
@@ -38,6 +51,10 @@ export default function MenuLateral() {
         { text: 'Filiais', icon: <BusinessIcon />, to: '/filiais' },
     ];
 
+    const handleLogout = () => {
+        signOut();
+    }
+
     return (
         <Box sx={{ height: '89vh', width: '80%', maxWidth: 240, bgcolor: 'primary.secondary', borderRadius: 2 }}>
             <List component="nav" aria-label="main mailbox folders">
@@ -55,6 +72,18 @@ export default function MenuLateral() {
                 ))}
             </List>
             <Divider />
+
+            <Footer>
+                <>
+                    <ListItemButton
+                        onClick={handleLogout}
+                    >
+                        <ListItemIcon><AccountCircle /></ListItemIcon>
+                        <ListItemText primary='Logout' />
+                    </ListItemButton>
+                </>
+            </Footer>
+
         </Box>
     );
 }

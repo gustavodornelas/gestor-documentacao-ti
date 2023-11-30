@@ -62,7 +62,20 @@ CREATE TABLE equipamento (
 
     CONSTRAINT FK_id_colaborador FOREIGN KEY (id_colaborador)
     REFERENCES colaborador (id) 
-)
+);
+
+CREATE TABLE usuarios (
+  id INT PRIMARY KEY AUTO_INCREMENT,
+  usuario VARCHAR(18) NOT NULL,
+  senha VARCHAR(255) NOT NULL,
+  nome VARCHAR(50)
+);
+
+CREATE TABLE tokens (
+  id INT PRIMARY KEY AUTO_INCREMENT,
+  token VARCHAR(255) NOT NULL,
+  id_usuario INT NOT NULL,
+);
 
 INSERT INTO empresa (nome, cnpj)
             VALUES  ('F5 TECNOLOGIA', '19151776000174'),
