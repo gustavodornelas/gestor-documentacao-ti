@@ -6,8 +6,8 @@ const verificarToken = require('./verificarToken');
 
 // Listar todas as filiais
 router.get('/', verificarToken, (req, res) => {
-    const sql = 'SELECT f.id as id, f.nome_filial as nome, e.nome as empresa, f.endereco as endereco, f.bairro as bairro, f.cidade as cidade, ' + 
-    'f.estado as estado, f.telefone as telefone FROM filial_empresa as f INNER JOIN empresa as e ON f.id_empresa = e.id';
+    const sql = 'SELECT f.id as id, f.nome_filial as nome, e.nome as empresa, f.endereco as endereco, f.bairro as bairro, f.cidade as cidade, ' +
+        'f.estado as estado, f.telefone as telefone FROM filial_empresa as f INNER JOIN empresa as e ON f.id_empresa = e.id';
     db.query(sql, (err, result) => {
         if (err) {
             throw err;
@@ -35,7 +35,7 @@ router.get('/:id', verificarToken, (req, res) => {
 // Cadastrar uma nova filial
 router.post('/', verificarToken, (req, res) => {
     console.log(req.body);
-    const { nome_filial, id_empresa, endereco, bairro, cidade, estado, telefone} = req.body;
+    const { nome_filial, id_empresa, endereco, bairro, cidade, estado, telefone } = req.body;
 
     const sql = 'INSERT INTO filial_empresa (nome_filial, id_empresa, endereco, bairro, cidade, estado, telefone) VALUES(?, ?, ?, ?,?, ?, ?)';
     db.query(sql, [nome_filial, id_empresa, endereco, bairro, cidade, estado, telefone], (err) => {
@@ -64,19 +64,39 @@ router.put('/:id', verificarToken, (req, res) => {
     })
 });
 
-// Deletar uma empresa
+// Deletar uma filial de empresa
 router.delete('/:id', verificarToken, (req, res) => {
     const { id } = req.params;
 
-    const sql = 'DELETE FROM filial_empresa WHERE id = ?';
-    db.query(sql, [id], (err) => {
+    // Verificar se a filial possui colaboradores
+    const checkColaboradoresSql = 'SELECT COUNT(*) AS colaboradoresCount FROM colaborador WHERE id_filial = ?';
+    db.query(checkColaboradoresSql, [id], (err, result) => {
         if (err) {
-            console.log('Erro: ' + err);
-            res.status(500).send('Erro ao deletar a filial da empresa');
-        } else {
-            res.send('filial da empresa deletada com sucesso');
+            console.log('Erro ao verificar colaboradores: ' + err);
+            res.status(500).send('Erro ao verificar colaboradores da filial da empresa');
+            return;
         }
-    })
+
+        const colaboradoresCount = result[0].colaboradoresCount;
+
+        // Se a filial tiver colaboradores, retorne um erro
+        if (colaboradoresCount > 0) {
+            res.status(400).send('Não é possível excluir a filial, pois ela possui colaboradores vinculados.');
+            return;
+        }
+
+        // Se a filial não tiver colaboradores, continue com a exclusão
+        const deleteFilialSql = 'DELETE FROM filial_empresa WHERE id = ?';
+        db.query(deleteFilialSql, [id], (deleteErr) => {
+            if (deleteErr) {
+                console.log('Erro ao deletar a filial da empresa: ' + deleteErr);
+                res.status(500).send('Erro ao deletar a filial da empresa');
+            } else {
+                res.send('Filial da empresa deletada com sucesso');
+            }
+        });
+    });
 });
+
 
 module.exports = router;

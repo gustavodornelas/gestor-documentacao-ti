@@ -24,44 +24,44 @@ const Login = () => {
     if (signed) {
         return < Navigate to="/Home" />
     } else {
-
         return (
-            <StyledContainer component="main" maxWidth="sm">
-                <CssBaseline />
-                <StyledFormContainer>
-                    <StyledTitle component="h1" variant="h5">
-                        Login
-                    </StyledTitle>
-                    <StyledInput
-                        variant="outlined"
-                        margin="normal"
-                        required
-                        fullWidth
-                        id="usuario"
-                        label="Usuário"
-                        name="usuario"
-                        autoComplete="usuario"
-                        autoFocus
-                        value={usuario}
-                        onChange={(e) => setUsuario(e.target.value)}
-                    />
-                    <StyledInput
-                        variant="outlined"
-                        margin="normal"
-                        required
-                        fullWidth
-                        name="senha"
-                        label="Senha"
-                        type="senha"
-                        id="senha"
-                        autoComplete="senha-atual"
-                        value={senha}
-                        onChange={(e) => setSenha(e.target.value)}
-                    />
-                    <StyledButton variant="contained" onClick={handleLogin}>
-                        Login
-                    </StyledButton>
-                </StyledFormContainer>
+            <StyledContainer component="main" maxWidth="md">
+                <CssBaseline>
+                    <StyledFormContainer>
+                        <StyledTitle component="h1" variant="h5">
+                            Login
+                        </StyledTitle>
+                        <StyledInput
+                            variant="outlined"
+                            margin="normal"
+                            required
+                            fullWidth
+                            id="usuario"
+                            label="Usuário"
+                            name="usuario"
+                            autoComplete="usuario"
+                            autoFocus
+                            value={usuario}
+                            onChange={(e) => setUsuario(e.target.value)}
+                        />
+                        <StyledInput
+                            variant="outlined"
+                            margin="normal"
+                            required
+                            fullWidth
+                            name="senha"
+                            label="Senha"
+                            type="senha"
+                            id="senha"
+                            autoComplete="senha-atual"
+                            value={senha}
+                            onChange={(e) => setSenha(e.target.value)}
+                        />
+                        <StyledButton variant="contained" onClick={handleLogin}>
+                            Login
+                        </StyledButton>
+                    </StyledFormContainer>
+                </CssBaseline>
             </StyledContainer>
         );
     }

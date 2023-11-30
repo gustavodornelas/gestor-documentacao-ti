@@ -41,30 +41,9 @@ export default function ListarEquipamentos() {
                 console.error("ops! ocorreu um erro", err);
             });
     }, []);
-    
+
     if (loading) {
-        return (
-            <Body>
-                <Header />
-                <Main>
-                    <MenuLateral />
-                    <Box
-                        sx={{
-                            p: 2,
-                            marginLeft: 1,
-                            border: "1px solid grey",
-                            borderRadius: 2,
-                            width: 2000,
-                        }}
-                    >
-                        <LoadingMessage>
-                            <CircularProgress />
-                            <p>Carregando...</p>
-                        </LoadingMessage>
-                    </Box>
-                </Main>
-            </Body>
-        );
+        return <loading />
     }
 
     if (equipamentos.length === 0) {
@@ -72,24 +51,8 @@ export default function ListarEquipamentos() {
     }
 
     return (
-        <Body>
-            <Header />
-            <Main>
-                <MenuLateral />
-                <Box
-                    sx={{
-                        p: 2,
-                        marginLeft: 1,
-                        border: "1px solid grey",
-                        borderRadius: 2,
-                        width: 2000,
-                        overflowY: "auto",
-                        overflowX: "auto",
-                    }}
-                >
-                    <Tabela dados={equipamentos} titulo="Cadastro de Equipamentos" />
-                </Box>
-            </Main>
-        </Body>
+
+        <Tabela dados={equipamentos} titulo="Cadastro de Equipamentos" />
+
     );
 }

@@ -2,7 +2,6 @@ const db = require('../database');
 
 function verificarToken(req, res, next) {
     const token = req.headers.authorization;
-    console.log(token);
     if (!token) {
         return res.status(403).json({ message: 'Token não fornecido' });
     }

@@ -65,17 +65,35 @@ router.put('/:id', verificarToken, (req, res) => {
 // Deletar uma empresa
 router.delete('/:id', verificarToken, (req, res) => {
     const { id } = req.params;
-    console.log('teste');
-    const sql = 'DELETE FROM empresa WHERE ID = ?';
-    db.query(sql, [id], (err) => {
+
+    // Verificar se a empresa possui filiais
+    const verificarFiliaisSql = 'SELECT COUNT(*) AS filiaisCount FROM filial_empresa WHERE id_empresa = ?';
+    db.query(verificarFiliaisSql, [id], (err, result) => {
         if (err) {
-            console.log('Erro: ' + err);
-            res.status(500).send('Erro ao deletar a empresa');
-        } else {
-            console.log('Empresa Deletada');
-            res.send('Empresa deletada com sucesso');
+            console.log('Erro ao verificar filiais: ' + err);
+            res.status(500).send('Erro ao verificar filiais da empresa');
+            return;
         }
-    })
+
+        const filiaisCount = result[0].filiaisCount;
+
+        // Se a empresa tiver filiais, retorne um erro
+        if (filiaisCount > 0) {
+            res.status(400).send('Não é possível excluir a empresa, pois ela possui filiais associadas.');
+            return;
+        }
+
+        // Se a empresa não tiver filiais, continue com a exclusão
+        const deleteEmpresaSql = 'DELETE FROM empresa WHERE ID = ?';
+        db.query(deleteEmpresaSql, [id], (err, result) => {
+            if (err) {
+                console.log('Erro ao deletar a empresa: ' + err);
+                res.status(500).send('Erro ao deletar a empresa');
+            } else {
+                res.send('Empresa deletada com sucesso');
+            }
+        });
+    });
 });
 
 module.exports = router;
